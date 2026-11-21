@@ -1,32 +1,28 @@
-// Filtered Figma artwork is pre-rendered to 3x PNG (see scripts/rasterize-assets.cjs)
-// because Safari renders SVG filter effects at low resolution.
-import logo from './assets/raster/logo@3x.png'
-import wordLight from './assets/raster/wordmark-gather-light@3x.png'
-import wordDark from './assets/raster/wordmark-gather-dark@3x.png'
-import { isSupabaseConfigured } from './lib/supabase'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './lib/auth'
+import { PublicOnly, RequireAuth } from './routes/guards'
+import Login from './pages/Login'
+import Welcome from './pages/Welcome'
+import SignupPlaceholder from './pages/SignupPlaceholder'
 
-// Step 1 placeholder: confirms fonts, colours, light/dark and env setup.
-// Replaced by the router in step 2.
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<PublicOnly><Login /></PublicOnly>} />
+      <Route path="/signup" element={<PublicOnly><SignupPlaceholder /></PublicOnly>} />
+      <Route path="/welcome" element={<RequireAuth><Welcome /></RequireAuth>} />
+      {/* Everything else requires sign-in; signed-in users land on /welcome. */}
+      <Route path="*" element={<Navigate to="/welcome" replace />} />
+    </Routes>
+  )
+}
+
 export default function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-bright to-whisper px-4 dark:from-bokara dark:to-hunter">
-      <div className="w-full max-w-[470px] rounded-card border-2 border-whisper bg-bright p-8 text-center shadow-card dark:border-lime/20 dark:bg-bokara">
-        <img src={logo} alt="Gather" width={90} height={69} className="mx-auto" />
-        <h1 className="mt-5 flex items-end justify-center gap-3 text-[40px] leading-none">
-          <span>Let’s</span>
-          <img src={wordLight} alt="gather" width={130} height={41} className="dark:hidden" />
-          <img src={wordDark} alt="gather" width={130} height={41} className="hidden dark:block" />
-        </h1>
-        <p className="mt-6 text-[15px] text-bokara/70 dark:text-whisper/70">Setup check</p>
-        <p className="mt-2 text-[15px]" role="status">
-          Supabase env:{' '}
-          {isSupabaseConfigured ? (
-            <span className="text-lime">configured ✓</span>
-          ) : (
-            <span className="text-[#C0392B] dark:text-[#E07B6E]">missing — copy .env.example to .env.local</span>
-          )}
-        </p>
-      </div>
-    </main>
+    <AuthProvider>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
   )
 }

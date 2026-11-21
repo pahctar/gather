@@ -19,5 +19,26 @@
   body {
     @apply bg-bright font-sans font-bold text-bokara antialiased dark:bg-bokara dark:text-whisper;
     -webkit-text-size-adjust: 100%;
+    /* Figma text uses "normal" line height everywhere. */
+    line-height: normal;
+  }
+
+  /* Keep the Figma input colours when Safari/Chrome autofill a field. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: theme('colors.bokara');
+    -webkit-box-shadow: 0 0 0 1000px theme('colors.bright') inset;
+    caret-color: theme('colors.bokara');
+    transition: background-color 9999s ease-out 0s;
+  }
+  @media (prefers-color-scheme: dark) {
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+      -webkit-text-fill-color: theme('colors.bright');
+      -webkit-box-shadow: 0 0 0 1000px theme('colors.bokara') inset;
+      caret-color: theme('colors.bright');
+    }
   }
 }

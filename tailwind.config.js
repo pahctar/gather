@@ -14,6 +14,9 @@ export default {
         lime: '#91A673', // Lucious Lime
         sage: '#C3CCB2', // light text gradient end (dark mode)
         mud: '#AE8F60', // palette swatch, swirl tone
+        // Not in the Figma palette: error text/borders (WCAG AA on Bright / Bokara).
+        error: '#B3261E',
+        'error-dark': '#F2A99E',
       },
       fontFamily: {
         sans: ['Comfortaa', 'ui-rounded', 'system-ui', 'sans-serif'],

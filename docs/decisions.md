@@ -26,6 +26,10 @@ except where the brief sets data, permission, or security rules.
 | 9 | Welcome placeholder has no design. | Minimal page with "Welcome, <name>" and a Log out button (needed to test the flow). |
 | 10 | Lo-fi Log-in shows "Forgot password?"; Figma doesn't. | **Deferred** (not built this session). Revisit when the Home design lands. |
 | 11 | Supabase requires email confirmation by default. | Kept **on**. After Sign-up the user sees "Check your inbox"; Create profile opens after their first log-in. |
+| 12 | Figma has no error states. | Field errors appear under the field in 12px bold; the field border turns red. Form-level errors (wrong password, timeout) appear as a banner above the button. Error red is not in the palette: `#B3261E` (light) and `#F2A99E` (dark), both WCAG AA on the card colours. |
+| 13 | Extra messages beyond the approved draft were needed for edge cases. | "Can't reach the server. Check your connection and try again." (offline), "Too many attempts. Wait a minute and try again." (Supabase rate limit), "Gather isn't connected to Supabase yet…" (missing .env.local), "Something went wrong. Please try again." (anything unexpected). All messages live in `src/lib/messages.ts`. |
+| 14 | Welcome needs a name, but profiles (display name) arrive in step 4. | Until then it shows the username saved at sign-up, falling back to the email. |
+| 15 | "Create an account" needs a destination before Sign-up exists (step 3). | Temporary placeholder page at `/signup`, replaced in step 3. |
 
 ## Assets
 
@@ -33,6 +37,7 @@ except where the brief sets data, permission, or security rules.
 |---|---|---|
 | A1 | The Figma SVG export of the Google "G" icon included canvas artefacts (a grey 20×20 backdrop, a 1440×1024 white page rect, and the component-set's dashed purple frame). | Those three elements were removed. The icon's own paths and masks are untouched. |
 | A2 | The dark-mode "eye open" icon (Password Input [Dark] → enter [open], node 19:680) couldn't be exported: the Figma MCP Starter-plan call limit was reached. | `icon-eye-open-dark.svg` was made from the light icon using the exact rule every other dark icon in the file follows (fill `#2A2725` → `#F6F2F1`, group opacity 0.15). **TODO:** replace with a real export when the limit resets. |
+| A4 | The "or" divider lines are 182px-wide SVGs in Figma, too wide for phone screens. | Drawn with CSS using the exact values from the SVGs (2px, round caps, Bokara / Whisper White at 25%), so they shrink with the card. |
 | A3 | Button hover states (Button → Light/Dark/Primary [Hover]) couldn't be read for the same reason. Google button hover states were read: light hover = `#EAE2D3` fill; dark hover = lime 20% border. | Button hover uses a subtle brightness change until the real values can be read. **TODO.** |
 
 ## Tech
