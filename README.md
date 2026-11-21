@@ -24,6 +24,22 @@ npm test                     # unit tests
    - Password requirements: **No required characters**
    - Leaked password protection: **off** (otherwise some 8+ character passwords get rejected without a clear reason)
 4. **Authentication → URL Configuration**: Site URL `http://localhost:5173`. Add `http://localhost:5173/**` to Redirect URLs.
-5. Database migrations live in `supabase/migrations/`. Run them in order, either by pasting each file into **SQL Editor** or with the Supabase CLI (`supabase link` then `supabase db push`).
+5. **Run the database migrations** (each file in `supabase/migrations/`, oldest first):
+   - Open **SQL Editor → New query**, paste the whole file, click **Run**. You should see "Success. No rows returned".
+   - Or with the Supabase CLI: `supabase link --project-ref <your-ref>` then `supabase db push`.
+   - Check: **Table Editor** shows a `profiles` table, and **Authentication → Policies** lists two policies on it.
+
+### Email limits while testing
+
+Supabase's built-in email service sends only a few emails per hour (about 2 on the free plan). If sign-ups start failing with "Too many attempts. Wait a minute and try again.", either wait, or for local testing turn **Confirm email** off (sign-up then goes straight in), or set up your own SMTP under **Authentication → Emails → SMTP Settings**.
+
+## Tests
+
+```bash
+npm test          # unit and page tests (no network)
+npm run test:db   # database migrations + row-level security tests (pgTAP)
+```
+
+`npm run test:db` needs a local Postgres 15+ with pgTAP (e.g. `brew install postgresql@16 pgtap` on macOS). With Docker and the Supabase CLI you can run `supabase test db` instead.
 
 Design decisions and inconsistencies are logged in [docs/decisions.md](docs/decisions.md).

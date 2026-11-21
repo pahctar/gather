@@ -3,13 +3,13 @@ import { AuthProvider } from './lib/auth'
 import { PublicOnly, RequireAuth } from './routes/guards'
 import Login from './pages/Login'
 import Welcome from './pages/Welcome'
-import SignupPlaceholder from './pages/SignupPlaceholder'
+import Signup from './pages/Signup'
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<PublicOnly><Login /></PublicOnly>} />
-      <Route path="/signup" element={<PublicOnly><SignupPlaceholder /></PublicOnly>} />
+      <Route path="/signup" element={<PublicOnly><Signup /></PublicOnly>} />
       <Route path="/welcome" element={<RequireAuth><Welcome /></RequireAuth>} />
       {/* Everything else requires sign-in; signed-in users land on /welcome. */}
       <Route path="*" element={<Navigate to="/welcome" replace />} />
