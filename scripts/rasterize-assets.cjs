@@ -2,10 +2,14 @@
 /**
  * Renders Figma SVGs that use SVG filters (inner shadows) to 3x PNGs.
  *
- * Why: Safari draws SVG filter effects at low resolution, so filtered artwork
- * (logo, wordmarks, feature icons, avatar) looks pixelated on Retina screens,
- * even when the SVG is inlined. Chromium renders the filters correctly, so we
- * pre-render the exact Figma SVGs here. The artwork is not modified.
+ * Why: Figma's inner-shadow export builds a hard (0/1) alpha mask from the
+ * shape ("hardAlpha"), which throws away edge anti-aliasing, so the shapes
+ * render with jagged edges in every browser (Safari also renders the filter
+ * at low resolution on top of that).
+ *
+ * Fix: supersampling. Each SVG is rendered at 12x, then downscaled to 3x in
+ * two high-quality halving steps (12x -> 6x -> 3x). The jagged steps become
+ * sub-pixel and average into smooth edges. The artwork is not modified.
  *
  * Usage: npm run assets:rasterize
  * Needs Playwright with Chromium available (require('playwright')).
@@ -16,7 +20,8 @@ const { chromium } = require('playwright')
 
 const SRC = path.join(__dirname, '..', 'src', 'assets', 'figma')
 const OUT = path.join(__dirname, '..', 'src', 'assets', 'raster')
-const SCALE = 3
+const SCALE = 3 // output: 3x (sharp on Retina Macs and iPhones)
+const SUPERSAMPLE = 4 // render at SCALE * SUPERSAMPLE = 12x, then downscale
 
 // Filtered SVGs to rasterise. swirl-profile-* are deliberately blurred
 // backgrounds, so low-res filter rendering is invisible there; they stay SVG.
@@ -47,21 +52,51 @@ function svgSize(svg) {
 ;(async () => {
   fs.mkdirSync(OUT, { recursive: true })
   const browser = await chromium.launch()
-  const page = await browser.newPage({ deviceScaleFactor: SCALE })
+  // 1) Render each SVG at 12x.
+  const render = await browser.newPage({ deviceScaleFactor: SCALE * SUPERSAMPLE })
+  // 2) Downscale in a normal 1x page with canvas, halving each step.
+  const resize = await browser.newPage()
+
   for (const file of FILES) {
     const svg = fs.readFileSync(path.join(SRC, file), 'utf8')
     const { w, h } = svgSize(svg)
     const W = Math.ceil(w)
     const H = Math.ceil(h)
-    await page.setViewportSize({ width: W, height: H })
+    await render.setViewportSize({ width: W, height: H })
     const dataUrl = 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64')
-    await page.setContent(
+    await render.setContent(
       `<html><body style="margin:0;background:transparent">` +
         `<img src="${dataUrl}" style="display:block;width:${w}px;height:${h}px"></body></html>`,
     )
-    await page.waitForFunction(() => document.images[0].complete)
+    await render.waitForFunction(() => document.images[0].complete)
+    const big = await render.screenshot({ omitBackground: true, clip: { x: 0, y: 0, width: W, height: H } })
+
+    const pngBase64 = await resize.evaluate(
+      async ({ src, outW, outH }) => {
+        const img = new Image()
+        img.src = src
+        await img.decode()
+        let canvas = document.createElement('canvas')
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        canvas.getContext('2d').drawImage(img, 0, 0)
+        while (canvas.width / 2 >= outW) {
+          const next = document.createElement('canvas')
+          next.width = Math.round(canvas.width / 2)
+          next.height = Math.round(canvas.height / 2)
+          const ctx = next.getContext('2d')
+          ctx.imageSmoothingEnabled = true
+          ctx.imageSmoothingQuality = 'high'
+          ctx.drawImage(canvas, 0, 0, next.width, next.height)
+          canvas = next
+        }
+        return canvas.toDataURL('image/png').split(',')[1]
+      },
+      { src: 'data:image/png;base64,' + big.toString('base64'), outW: W * SCALE, outH: H * SCALE },
+    )
+
     const out = path.join(OUT, file.replace(/\.svg$/, '@3x.png'))
-    await page.screenshot({ path: out, omitBackground: true, clip: { x: 0, y: 0, width: W, height: H } })
+    fs.writeFileSync(out, Buffer.from(pngBase64, 'base64'))
     console.log(`${file} → ${path.relative(process.cwd(), out)} (${W * SCALE}×${H * SCALE})`)
   }
   await browser.close()
