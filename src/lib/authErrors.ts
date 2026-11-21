@@ -39,8 +39,22 @@ export function loginErrorMessage(err: unknown): string {
 
 export type SignupErrorResult = { field?: 'email' | 'password' | 'username'; message: string }
 
+/** Short code shown after "Something went wrong" so unknown failures can be diagnosed. */
+function errorCode(err: unknown): string {
+  const e = err as { code?: unknown; status?: unknown; name?: unknown } | null
+  const parts = [e?.code, e?.status].filter((v) => v !== undefined && v !== null && v !== '')
+  return parts.length ? parts.join(' / ') : String(e?.name ?? 'unknown')
+}
+
+/** PostgREST error from calling username_available(): function or table missing. */
+function isDatabaseSetupError(err: unknown): boolean {
+  const code = (err as { code?: unknown } | null)?.code
+  return code === 'PGRST202' || code === 'PGRST205' || code === '42883' || code === '42P01'
+}
+
 /** Same for signUp. `field` says which input the message belongs under. */
 export function signupErrorMessage(err: unknown): SignupErrorResult {
+  if (isDatabaseSetupError(err)) return { message: MSG.dbNotSetUp }
   if (isAuthWeakPasswordError(err)) {
     if (err.reasons.includes('pwned')) return { field: 'password', message: MSG.passwordPwned }
     if (err.reasons.includes('length')) return { field: 'password', message: MSG.passwordShort }
@@ -57,9 +71,12 @@ export function signupErrorMessage(err: unknown): SignupErrorResult {
       case 'signup_disabled':
       case 'email_provider_disabled':
         return { message: MSG.signupsDisabled }
+      case 'email_address_not_authorized':
+        return { field: 'email', message: MSG.emailNotAuthorized }
     }
+    if (/error sending confirmation (email|mail)/i.test(err.message)) return { message: MSG.emailSendFailed }
   }
   const common = commonMessage(err)
   if (common) return { message: common }
-  return { message: MSG.unknown }
+  return { message: `${MSG.unknown} (${errorCode(err)})` }
 }

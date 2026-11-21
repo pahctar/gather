@@ -144,6 +144,31 @@ describe('Sign-up page', () => {
     expect(await screen.findByText(MSG.passwordRejected)).toBeInTheDocument()
   })
 
+  it('explains Supabase’s built-in email only sending to team addresses', async () => {
+    signUp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: new AuthApiError('Email address "x@example.com" cannot be used as it is not authorized', 400, 'email_address_not_authorized'),
+    })
+    renderSignup()
+    await submit()
+    expect(await screen.findByText(MSG.emailNotAuthorized)).toBeInTheDocument()
+  })
+
+  it('says the database is not set up when the username check function is missing', async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: 'PGRST202', message: 'Could not find the function public.username_available(name)' } })
+    renderSignup()
+    await submit()
+    expect(await screen.findByRole('alert')).toHaveTextContent(MSG.dbNotSetUp)
+    expect(signUp).not.toHaveBeenCalled()
+  })
+
+  it('shows the error code for anything unexpected', async () => {
+    signUp.mockResolvedValue({ data: { user: null, session: null }, error: new AuthApiError('Something odd', 500, 'hook_timeout') })
+    renderSignup()
+    await submit()
+    expect(await screen.findByRole('alert')).toHaveTextContent(`${MSG.unknown} (hook_timeout / 500)`)
+  })
+
   it('reports a username taken in a race (database error) as taken', async () => {
     rpc.mockResolvedValueOnce({ data: true, error: null }).mockResolvedValueOnce({ data: false, error: null })
     signUp.mockResolvedValue({ data: { user: null, session: null }, error: new AuthApiError('Database error saving new user', 500, 'unexpected_failure') })

@@ -22,6 +22,11 @@ export const MSG = {
     'This password was rejected by the server’s password rules. (Supabase → Authentication → Email: set “Password requirements” to “No required characters”.)',
   passwordPwned: 'This password has appeared in a data breach. Please choose a different one.',
   signupsDisabled: 'Sign-ups are turned off for this project.',
+  /** Supabase's built-in email only delivers to members of the Supabase organization. */
+  emailNotAuthorized:
+    "Supabase can't send email to this address yet. For testing, use the email of your Supabase account, or set up SMTP (see README).",
+  emailSendFailed: "We couldn't send the confirmation email. Try again later.",
+  dbNotSetUp: "The database isn't set up yet. Run the Supabase migrations (see README).",
 
   // Create profile
   nameRequired: 'Name is required.',

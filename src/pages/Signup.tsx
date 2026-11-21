@@ -123,6 +123,7 @@ export default function Signup() {
       )
 
       if (error) {
+        console.error('Sign-up failed:', error)
         // A sign-up that fails in the database is almost always a username
         // taken in the moment between our check and the sign-up.
         if (error.code === 'unexpected_failure' && !(await isUsernameAvailable(name).catch(() => true))) {
@@ -149,6 +150,7 @@ export default function Signup() {
       }
       setSentTo(email.trim())
     } catch (err) {
+      console.error('Sign-up failed:', err)
       setFormError(signupErrorMessage(err).message)
     } finally {
       // Always reset, on success and failure (brief: never hang on "…ing").

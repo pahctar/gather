@@ -31,7 +31,12 @@ npm test                     # unit tests
 
 ### Email limits while testing
 
-Supabase's built-in email service sends only a few emails per hour (about 2 on the free plan). If sign-ups start failing with "Too many attempts. Wait a minute and try again.", either wait, or for local testing turn **Confirm email** off (sign-up then goes straight in), or set up your own SMTP under **Authentication → Emails → SMTP Settings**.
+Supabase's built-in email service is for testing only:
+
+- **It only sends to members of your Supabase organization.** Signing up with any other address fails ("Supabase can't send email to this address yet…"). Use the email you log in to Supabase with, or invite a teammate under **Organization → Team**.
+- **It sends only a few emails per hour** (about 2 on the free plan). Too many sign-ups in a row show "Too many attempts. Wait a minute and try again."
+
+To sign up with any address, either turn **Confirm email** off for local testing (sign-up then logs straight in), or set up your own SMTP (e.g. Resend, Brevo or Gmail) under **Authentication → Emails → SMTP Settings**.
 
 ## Tests
 
