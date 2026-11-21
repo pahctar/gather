@@ -37,7 +37,7 @@ function Hero() {
     <div className="text-center xl:text-left">
       <h1 className="flex items-start justify-center gap-3 text-[52px] font-bold leading-[70px] text-bokara xl:ml-[50px] xl:justify-start xl:gap-[30px] xl:text-[90px] xl:leading-[121px] dark:text-whisper">
         <span>Let’s</span>
-        <span className="relative mt-[4px] block h-[60px] w-[190px] shrink-0 xl:h-[106px] xl:w-[337px]">
+        <span className="relative mt-[8px] block h-[60px] w-[190px] shrink-0 xl:mt-[11px] xl:h-[106px] xl:w-[337px]">
           <img src={heroBase} alt="" aria-hidden width={337} height={106} className={img} />
           <img src={heroLight} alt="gather" width={337} height={106} className={`${img} dark:hidden`} />
           <img src={heroDark} alt="gather" width={337} height={106} className={`${img} hidden dark:block`} />
