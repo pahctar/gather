@@ -1,0 +1,23 @@
+@import '@fontsource/comfortaa/500.css';
+@import '@fontsource/comfortaa/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-bright font-sans font-bold text-bokara antialiased dark:bg-bokara dark:text-whisper;
+    -webkit-text-size-adjust: 100%;
+  }
+}
