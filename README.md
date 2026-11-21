@@ -27,7 +27,7 @@ npm test                     # unit tests
 5. **Run the database migrations** (each file in `supabase/migrations/`, oldest first):
    - Open **SQL Editor → New query**, paste the whole file, click **Run**. You should see "Success. No rows returned".
    - Or with the Supabase CLI: `supabase link --project-ref <your-ref>` then `supabase db push`.
-   - Check: **Table Editor** shows a `profiles` table, and **Authentication → Policies** lists two policies on it.
+   - Check: **Table Editor** shows a `profiles` table, **Authentication → Policies** lists two policies on it, and **Storage** shows a public `avatars` bucket.
 
 ### Email limits while testing
 

@@ -37,6 +37,11 @@ except where the brief sets data, permission, or security rules.
 | 20 | What does Sign-up do if "Confirm email" is turned off in Supabase? | It signs the user in straight away and goes to Welcome. With it on (our setting), it shows "Check your inbox". |
 | 21 | An existing email: Supabase hides whether an address is registered (it returns a user with no identities, and sends no email). | Detected and shown as "An account with this email already exists." under the email field. |
 | 22 | Sign-up can fail inside the database if someone grabs the same username between our check and the sign-up. | The page re-checks and shows "That username is taken." |
+| 23 | Avatar handling isn't specified beyond "optional avatar". | The photo is chosen with the edit badge and previewed at once, but only uploaded when "Let's gather!" is pressed (no stray files if the user leaves). It is centre-cropped to a 512×512 JPEG in the browser, which also strips photo metadata such as location. Accepted: JPG, PNG, WebP up to 5 MB (same limits on the storage bucket). On iPhone, HEIC photos are converted to JPEG by Safari automatically. |
+| 24 | Who can see avatars? | The `avatars` bucket is public-read: anyone with the exact URL can view the image (friends will need it later). Only the owner can upload, replace or delete files in their folder. |
+| 25 | Date of birth boxes. | Digits only; DD and MM jump to the next box when full; Backspace in an empty box goes back. |
+| 26 | What happens if the profile can't be loaded after log-in? Not designed. | A card with the reason ("Couldn't load your profile.", the timeout/offline message, or, for developers, "The profiles table is missing. Run the Supabase migrations (see README).") plus "Try again" and "Log out". |
+| 27 | Routing around Create profile. | Signed-in users without a name always land on Create profile. Once it's done, /create-profile redirects to Welcome (editing comes with the Account page). |
 
 ## Assets
 
@@ -44,6 +49,7 @@ except where the brief sets data, permission, or security rules.
 |---|---|---|
 | A1 | The Figma SVG export of the Google "G" icon included canvas artefacts (a grey 20×20 backdrop, a 1440×1024 white page rect, and the component-set's dashed purple frame). | Those three elements were removed. The icon's own paths and masks are untouched. |
 | A2 | The dark-mode "eye open" icon (Password Input [Dark] → enter [open], node 19:680) couldn't be exported: the Figma MCP Starter-plan call limit was reached. | `icon-eye-open-dark.svg` was made from the light icon using the exact rule every other dark icon in the file follows (fill `#2A2725` → `#F6F2F1`, group opacity 0.15). **TODO:** replace with a real export when the limit resets. |
+| A5 | Card side padding was 31px, making fields 404px wide instead of Figma's 400px. | Fixed to 33px: fields are 400px wide and centred (as in the dark frames; the light frames have them 2px off-centre). |
 | A4 | The "or" divider lines are 182px-wide SVGs in Figma, too wide for phone screens. | Drawn with CSS using the exact values from the SVGs (2px, round caps, Bokara / Whisper White at 25%), so they shrink with the card. |
 | A3 | Button hover states (Button → Light/Dark/Primary [Hover]) couldn't be read for the same reason. Google button hover states were read: light hover = `#EAE2D3` fill; dark hover = lime 20% border. | Button hover uses a subtle brightness change until the real values can be read. **TODO.** |
 

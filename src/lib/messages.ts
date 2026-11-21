@@ -23,6 +23,16 @@ export const MSG = {
   passwordPwned: 'This password has appeared in a data breach. Please choose a different one.',
   signupsDisabled: 'Sign-ups are turned off for this project.',
 
+  // Create profile
+  nameRequired: 'Name is required.',
+  dobIncomplete: 'Enter a full date of birth, or leave it blank.',
+  dobInvalid: 'Enter a real date of birth.',
+  photoInvalid: 'Photos must be JPG, PNG or WebP, up to 5 MB.',
+  photoUpload: "Couldn't upload the photo. Try again.",
+  profileLoad: "Couldn't load your profile.",
+  profileMissingTable: 'The profiles table is missing. Run the Supabase migrations (see README).',
+  tryAgain: 'Try again',
+
   // Shared
   timeout: TIMEOUT_MESSAGE,
   network: "Can't reach the server. Check your connection and try again.",

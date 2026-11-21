@@ -42,7 +42,7 @@ export function AuthLayout({ swirl, children, className = '' }: Props) {
 export function AuthCard({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={`w-full max-w-[470px] rounded-card border-2 border-whisper bg-bright px-5 pb-10 pt-9 shadow-card sm:px-[31px] dark:border-lime/20 dark:bg-bokara ${className}`}
+      className={`w-full max-w-[470px] rounded-card border-2 border-whisper bg-bright px-5 pb-10 pt-9 shadow-card sm:px-[33px] dark:border-lime/20 dark:bg-bokara ${className}`}
     >
       {children}
     </div>
