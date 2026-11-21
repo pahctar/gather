@@ -1,6 +1,8 @@
-import Logo from './assets/figma/logo.svg?react'
-import WordLight from './assets/figma/wordmark-gather-light.svg?react'
-import WordDark from './assets/figma/wordmark-gather-dark.svg?react'
+// Filtered Figma artwork is pre-rendered to 3x PNG (see scripts/rasterize-assets.cjs)
+// because Safari renders SVG filter effects at low resolution.
+import logo from './assets/raster/logo@3x.png'
+import wordLight from './assets/raster/wordmark-gather-light@3x.png'
+import wordDark from './assets/raster/wordmark-gather-dark@3x.png'
 import { isSupabaseConfigured } from './lib/supabase'
 
 // Step 1 placeholder: confirms fonts, colours, light/dark and env setup.
@@ -9,11 +11,11 @@ export default function App() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-bright to-whisper px-4 dark:from-bokara dark:to-hunter">
       <div className="w-full max-w-[470px] rounded-card border-2 border-whisper bg-bright p-8 text-center shadow-card dark:border-lime/20 dark:bg-bokara">
-        <Logo role="img" aria-label="Gather" className="mx-auto" />
+        <img src={logo} alt="Gather" width={90} height={69} className="mx-auto" />
         <h1 className="mt-5 flex items-end justify-center gap-3 text-[40px] leading-none">
           <span>Let’s</span>
-          <WordLight role="img" aria-label="gather" className="dark:hidden" />
-          <WordDark role="img" aria-label="gather" className="hidden dark:block" />
+          <img src={wordLight} alt="gather" width={130} height={41} className="dark:hidden" />
+          <img src={wordDark} alt="gather" width={130} height={41} className="hidden dark:block" />
         </h1>
         <p className="mt-6 text-[15px] text-bokara/70 dark:text-whisper/70">Setup check</p>
         <p className="mt-2 text-[15px]" role="status">
