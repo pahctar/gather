@@ -178,8 +178,10 @@ export default function Signup() {
             <div className="py-6 text-center" role="status">
               <h2 className="text-[40px] font-bold leading-[normal] text-bokara dark:text-whisper">Check your inbox</h2>
               <p className="mt-4 text-[15px] font-bold text-bokara/70 dark:text-whisper/70">
-                We sent a confirmation link to <span className="break-all text-bokara dark:text-whisper">{sentTo}</span>. Open
-                it, then log in.
+                We sent a confirmation link to
+                {/* Own line; only very long addresses wrap, and only when they must. */}
+                <span className="my-1 block text-bokara [overflow-wrap:anywhere] dark:text-whisper">{sentTo}.</span>
+                Open it, then log in.
               </p>
               <Link
                 to="/login"

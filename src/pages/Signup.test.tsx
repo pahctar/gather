@@ -109,7 +109,7 @@ describe('Sign-up page', () => {
     renderSignup()
     await submit()
     expect(await screen.findByRole('heading', { name: 'Check your inbox' })).toBeInTheDocument()
-    expect(screen.getByText('mild@example.com')).toBeInTheDocument()
+    expect(screen.getByText('mild@example.com.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Back to log-in' })).toHaveAttribute('href', '/login')
     expect(signUp).toHaveBeenCalledWith(
       expect.objectContaining({
